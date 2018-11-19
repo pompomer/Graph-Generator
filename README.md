@@ -15,3 +15,15 @@
 グラフの凡例は、ドラッグ&ドロップで移動させることが可能です。
 
 ![2](https://user-images.githubusercontent.com/44617952/48715210-d5518700-ec57-11e8-8fa9-24b75eb1823c.PNG)
+
+## exeファイルのダウンロード
+
+ファイルサイズが大きいためここにアップロードできませんでした。そのため、GoogleDriveにアップロードしています。
+
+https://drive.google.com/drive/folders/11a72Dv8PkcwaphS6R3fnzCi6qv7Ku_QM?usp=sharing
+
+## 各設定項目の詳細
+
+- X-axis name
+X軸のラベル名称
+- Y1-axis name：
