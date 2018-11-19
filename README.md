@@ -1,7 +1,7 @@
 # Graph-Generator
 2軸グラフ、対数グラフ、近似曲線を手早く作成するプログラム
 
-https://user-images.githubusercontent.com/44617952/48714628-70e1f800-ec56-11e8-8bc2-2dc230ee4bf1.PNG
+![default](https://user-images.githubusercontent.com/44617952/48715137-aa673300-ec57-11e8-9dc2-a57e71c80f59.PNG)
 
 「Import file」からグラフにしたいcsvファイルを取り込むと、上のような画面になります。
 
