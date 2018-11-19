@@ -24,6 +24,17 @@ https://drive.google.com/drive/folders/11a72Dv8PkcwaphS6R3fnzCi6qv7Ku_QM?usp=sha
 
 ## 各設定項目の詳細
 
-- X-axis name
-X軸のラベル名称
-- Y1-axis name：
+- X-axis name：X軸のラベル名称
+- Y1-axis name：Y1軸のラベル名称
+- Y2-axis name：Y2軸のラベル名称
+- Label：描画するデータの凡例名称、空欄で凡例なし
+- Marker：データ点に用いるマーカー
+- Line：線の選択
+- Approx：n次多項式による近似曲線
+- Degree：n次多項式のn
+- Approx Label：近似曲線の凡例名称、空欄で凡例なし
+
+## 注意点
+
+- 近似曲線を描画するときは、元のデータ点を結ぶ直線は描画されません
+- ラベルに日本語を用いる場合は、「Noto Sans CJK JP」というフォントを入れる必要があります
