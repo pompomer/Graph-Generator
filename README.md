@@ -7,10 +7,11 @@
 
 点や線のスタイル、対数軸設定、Y軸のどちらに描画するかなどを決めることができます。
 
-https://user-images.githubusercontent.com/44617952/48714688-8ce59980-ec56-11e8-82e6-5c4930a85d00.PNG
+![1](https://user-images.githubusercontent.com/44617952/48715196-cbc81f00-ec57-11e8-8256-0a61a882a89e.PNG)
+
 
 「Output」でグラフが出力されます。
 
 グラフの凡例は、ドラッグ&ドロップで移動させることが可能です。
 
-https://user-images.githubusercontent.com/44617952/48714705-98d15b80-ec56-11e8-8f25-663a5750a435.PNG
+![2](https://user-images.githubusercontent.com/44617952/48715210-d5518700-ec57-11e8-8fa9-24b75eb1823c.PNG)
