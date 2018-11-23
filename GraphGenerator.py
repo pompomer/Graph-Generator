@@ -6,6 +6,7 @@ import tkinter.messagebox
 import tkinter.ttk as ttk
 import matplotlib as mpl
 
+
 font = {"family":"Noto Sans CJK JP"}
 mpl.rc('font', **font)
 
@@ -57,10 +58,11 @@ class App(tk.Frame):
 
     # 中央Frame作成
     def create_frame_center(self):
+
+        # ウィンドウサイズに合わせて中央線を延長
         root.update_idletasks()
         wy = self.frame_left.winfo_height()
-        self.canvas = tk.Canvas(
-            self.frame_center, width=1, height=wy, bg="black")
+        self.canvas = tk.Canvas(self.frame_center, width=1, height=wy, bg="black")
         self.canvas.pack()
 
     # 右Frame作成
@@ -107,9 +109,24 @@ class App(tk.Frame):
     # ファイルのインポート
     def import_file(self):
         filename = tk.filedialog.askopenfilename()
-        with open(filename, "r") as f:
-            self.data = np.loadtxt(f,delimiter=",")
-        self.create_graph_status()
+
+        if filename!="":
+
+            with open(filename, "r") as f:
+                #ヘッダ判定
+                while True:
+
+                    try:
+                        self.data = np.loadtxt(f, dtype="float", skiprows=0, delimiter=",")                  
+                    except ValueError:                   
+                        pass
+                    else:
+                        break
+
+            self.create_graph_status()
+           
+        self.centerline()
+
 
     # チェックボックス生成
     def create_graph_status(self):
@@ -117,8 +134,9 @@ class App(tk.Frame):
         def func():
             self.row = len(self.data)
             self.column = max([len(v) for v in self.data])
+            print(self.row)
             
-            #初期化
+            # widget初期化
             self.frame_right.destroy()
             self.frame_right = tk.Frame(self)
             self.frame_right.grid(row=0, column=2, sticky=tk.NW)
@@ -253,7 +271,7 @@ class App(tk.Frame):
                         self.ax1.plot(self.data[:,x], self.ApproxLine(i), marker="None", ls=self.trans_line(self.combobox_Line[i].get()), label=self.entry_ApproxLabel[i].get(), color="black")
                         
                     if self.var_Y2[i].get()==True:
-                        self.ax1.plot(self.data[:,x], self.data[:,i], marker=self.trans_marker(self.combobox_Marker[i].get()), ls="None", label=self.entry_Label[i].get(), color="black", markerfacecolor="None")
+                        self.ax2.plot(self.data[:,x], self.data[:,i], marker=self.trans_marker(self.combobox_Marker[i].get()), ls="None", label=self.entry_Label[i].get(), color="black", markerfacecolor="None")
                         self.ax2.plot(self.data[:,x], self.ApproxLine(i), marker="None", ls=self.trans_line(self.combobox_Line[i].get()), label=self.entry_ApproxLabel[i].get(), color="black")
                         self.ax2.set_ylabel(self.entry_Y2.get())
                         judge = 1
@@ -271,14 +289,13 @@ class App(tk.Frame):
                 self.ax1.set_ylabel(self.entry_Y1.get())
                 self.ax2.set_ylabel(self.entry_Y2.get())
 
-            # 対数軸の設定
             self.LogAxis()
 
-            
             plt.show()
 
         return func()
 
+    # マーカーのスタイルをmatplotlibの表記に変換
     def trans_marker(self, marker):
         if marker=="〇":
             return "o"
@@ -297,6 +314,7 @@ class App(tk.Frame):
         else:
             return "None"
 
+    # 線のスタイルをmatplotlibの表記に変換
     def trans_line(self, line):
         if line=="Solid":
             return "-"
@@ -309,6 +327,7 @@ class App(tk.Frame):
         else:
             return "None"
 
+    # 対数軸生成
     def LogAxis(self):
         if self.var_LogX[0].get()==True:
             self.ax1.set_xscale("log")
@@ -318,10 +337,17 @@ class App(tk.Frame):
 
         if self.var_LogY2[0].get()==True:
             self.ax2.set_yscale("log")
+            
     
-
+    # 近似曲線の計算
     def ApproxLine(self, i):
-        x = self.data[:,self.var_X.get()]
+
+        # x軸が対数スケールのとき補正　有効か検証必要あり
+        if self.var_LogX[0].get()==True:
+            x = np.log10(self.data[:,self.var_X.get()])
+        else:
+            x = self.data[:,self.var_X.get()]
+        
         y = self.data[:,i]
         approxstyle = self.combobox_Approx[i].get()
         deg = int(self.entry_Degree[i].get())
