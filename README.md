@@ -39,6 +39,10 @@ https://drive.google.com/drive/folders/11a72Dv8PkcwaphS6R3fnzCi6qv7Ku_QM?usp=sha
 - 近似曲線を描画するときは、元のデータ点を結ぶ直線は描画されません
 - ラベルに日本語を用いる場合は、「Noto Sans CJK JP」というフォントを入れる必要があります
 
+## 更新内容
+
+- 11/23 csvにヘッダがある場合に動作しない不具合を解消しました。
+
 ## 今後実装予定
 
 - X軸がlog、Y軸がlinearのときに近似曲線を正しく描画
