@@ -43,6 +43,8 @@ https://drive.google.com/drive/folders/11a72Dv8PkcwaphS6R3fnzCi6qv7Ku_QM?usp=sha
 
 - 11/23 csvにヘッダがある場合に動作しない不具合を解消しました。
 
+　　　　 横軸が対数の場合（周波数など）に、近似曲線に補正をかける機能を実装しました。
+
 ## 今後実装予定
 
 - X軸がlog、Y軸がlinearのときに近似曲線を正しく描画
