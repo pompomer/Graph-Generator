@@ -1,20 +1,20 @@
 # Graph-Generator
 2軸グラフ、対数グラフ、近似曲線を手早く作成するプログラム
 
-![default](https://user-images.githubusercontent.com/44617952/48715137-aa673300-ec57-11e8-9dc2-a57e71c80f59.PNG)
+![キャプチャ](https://user-images.githubusercontent.com/44617952/54919611-95234d80-4f44-11e9-9c6e-d6a9b0031c3a.PNG)
 
 「Import file」からグラフにしたいcsvファイルを取り込むと、上のような画面になります。
 
-点や線のスタイル、対数軸設定、Y軸のどちらに描画するかなどを決めることができます。
+点や線のスタイル、対数軸設定、Y1軸・Y2軸のどちらに描画するかなどを決めることができます。X軸として用いるデータ系列も設定する必要があります。
 
-![1](https://user-images.githubusercontent.com/44617952/48715196-cbc81f00-ec57-11e8-8256-0a61a882a89e.PNG)
+![キャプチャ2](https://user-images.githubusercontent.com/44617952/54919640-a704f080-4f44-11e9-86d6-c7411f1cb0ec.PNG)
 
 
 「Output」でグラフが出力されます。
 
 グラフの凡例は、ドラッグ&ドロップで移動させることが可能です。
 
-![2](https://user-images.githubusercontent.com/44617952/48715210-d5518700-ec57-11e8-8fa9-24b75eb1823c.PNG)
+![キャプチャ3](https://user-images.githubusercontent.com/44617952/54919652-b3894900-4f44-11e9-8fcf-4788c0a14332.PNG)
 
 ## exeファイルのダウンロード
 
@@ -47,8 +47,10 @@ csvにヘッダがある場合に動作しない不具合を解消しました�
 
 横軸が対数の場合（周波数など）に、近似曲線に補正をかける機能を実装しました。多項式の係数決定に用いるxの値をlog10としています。
 
+- 2019/3/25
+
+描画範囲、主目盛間隔、x軸データ選択を行えるようにしました。
+
 ## 今後実装予定
 
-- X軸がlog、Y軸がlinearのときに近似曲線を正しく描画
-- 他の近似曲線の導入
 - 可能であれば、デフォルトで日本語対応
