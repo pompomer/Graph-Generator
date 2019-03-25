@@ -181,7 +181,7 @@ class App(tk.Frame):
             X_values = []
             self.combobox_X = []
             for i in range(self.column):
-                X_values.append(i)
+                X_values.append(i+1)
 
             for i in range(self.column):
                 self.combobox_X.append(ttk.Combobox(self.frame_right, state="readonly", width=5, values=X_values, justify=tk.CENTER))
@@ -293,19 +293,19 @@ class App(tk.Frame):
 
             # グラフ描画
             for i in range(self.column):
-                x = int(self.combobox_X[i].get())
+                x = int(self.combobox_X[i].get())-1
               
-                if (self.var_Y1[i].get()==True):
+                if (self.var_Y1[i].get()==True)&(self.combobox_Approx[i].get()=="None"):
                     self.ax1.plot(self.data[:,x], self.data[:,i], marker=self.trans_marker(self.combobox_Marker[i].get()), ls=self.trans_line(self.combobox_Line[i].get()), label=self.entry_Label[i].get(), color="black", markerfacecolor="None")
-
-                if (self.var_Y2[i].get()==True):
+     
+                if (self.var_Y2[i].get()==True)&(self.combobox_Approx[i].get()=="None"):
                     self.ax2.plot(self.data[:,x], self.data[:,i], marker=self.trans_marker(self.combobox_Marker[i].get()), ls=self.trans_line(self.combobox_Line[i].get()), label=self.entry_Label[i].get(), color="black", markerfacecolor="None")
                     self.ax2.set_ylabel(self.entry_Y2.get())
                     judge = 1
 
             # 近似曲線描画
             for i in range(self.column):
-                x = int(self.combobox_X[i].get())
+                x = int(self.combobox_X[i].get())-1
 
                 if self.combobox_Approx[i].get()!="None":
                     
@@ -390,9 +390,9 @@ class App(tk.Frame):
 
         # x軸が対数スケールのとき補正　有効か検証必要あり
         if self.var_LogX[0].get()==True:
-            x = np.log10(self.data[:,int(self.combobox_X[i].get())])
+            x = np.log10(self.data[:,int(self.combobox_X[i].get())-1])
         else:
-            x = self.data[:,int(self.combobox_X[i].get())]
+            x = self.data[:,int(self.combobox_X[i].get())-1]
         
         y = self.data[:,i]
         deg = int(self.entry_Degree[i].get())
