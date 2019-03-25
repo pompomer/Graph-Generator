@@ -38,23 +38,57 @@ class App(tk.Frame):
         label_X = tk.Label(self.frame_left, text="X-axis name")
         label_X.grid(row=1, column=0)
         self.entry_X = tk.Entry(self.frame_left, justify=tk.CENTER)
-        self.entry_X.grid(row=1, column=1)
+        self.entry_X.grid(row=1, column=1,columnspan=3)
 
         label_Y1 = tk.Label(self.frame_left, text="Y1-axis name")
         label_Y1.grid(row=2, column=0)
         self.entry_Y1 = tk.Entry(self.frame_left, justify=tk.CENTER)
-        self.entry_Y1.grid(row=2, column=1)
+        self.entry_Y1.grid(row=2, column=1,columnspan=3)
     
         label_Y2 = tk.Label(self.frame_left, text="Y2-axis name")
         label_Y2.grid(row=3, column=0)
         self.entry_Y2 = tk.Entry(self.frame_left, justify=tk.CENTER)
-        self.entry_Y2.grid(row=3, column=1)
+        self.entry_Y2.grid(row=3, column=1,columnspan=3)
+
+        label_begin = tk.Label(self.frame_left, text="begin")
+        label_begin.grid(row=4, column=1)
+        label_end = tk.Label(self.frame_left, text="end")
+        label_end.grid(row=4, column=2)
+        label_tick = tk.Label(self.frame_left, text="tick")
+        label_tick.grid(row=4, column=3)
+        self.entry_Xtick = tk.Entry(self.frame_left, justify=tk.CENTER, width=5)
+        self.entry_Xtick.grid(row=5,column=3)
+        self.entry_Y1tick = tk.Entry(self.frame_left, justify=tk.CENTER, width=5)
+        self.entry_Y1tick.grid(row=6,column=3)
+        self.entry_Y2tick = tk.Entry(self.frame_left, justify=tk.CENTER, width=5)
+        self.entry_Y2tick.grid(row=7,column=3)
+
+        label_Xrange = tk.Label(self.frame_left, text="X-range")
+        label_Xrange.grid(row=5, column=0)
+        self.entry_Xrange_min = tk.Entry(self.frame_left, justify=tk.CENTER, width=5)
+        self.entry_Xrange_min.grid(row=5,column=1)
+        self.entry_Xrange_max = tk.Entry(self.frame_left, justify=tk.CENTER, width=5)
+        self.entry_Xrange_max.grid(row=5, column=2)
+
+        label_Y1range = tk.Label(self.frame_left, text="Y1-range")
+        label_Y1range.grid(row=6, column=0)
+        self.entry_Y1range_min = tk.Entry(self.frame_left, justify=tk.CENTER, width=5)
+        self.entry_Y1range_min.grid(row=6,column=1)
+        self.entry_Y1range_max = tk.Entry(self.frame_left, justify=tk.CENTER, width=5)
+        self.entry_Y1range_max.grid(row=6, column=2)
+
+        label_Y2range = tk.Label(self.frame_left, text="Y2-range")
+        label_Y2range.grid(row=7, column=0)
+        self.entry_Y2range_min = tk.Entry(self.frame_left, justify=tk.CENTER, width=5)
+        self.entry_Y2range_min.grid(row=7,column=1)
+        self.entry_Y2range_max = tk.Entry(self.frame_left, justify=tk.CENTER, width=5)
+        self.entry_Y2range_max.grid(row=7, column=2)
 
         self.button_apply = tk.Button(self.frame_left, text="Output", command=self.create_graph)
-        self.button_apply.grid(row=4, column=1)
+        self.button_apply.grid(row=8, column=2, columnspan=2)
 
         self.button_import = tk.Button(self.frame_left, text="Import file", command=self.import_file)
-        self.button_import.grid(row=5, column=1)
+        self.button_import.grid(row=9, column=2, columnspan=2)
 
     # 中央Frame作成
     def create_frame_center(self):
@@ -94,6 +128,7 @@ class App(tk.Frame):
         self.label_ApproxLabel = tk.Label(self.frame_right, text="ApproxLabel", justify=tk.CENTER)
         self.label_ApproxLabel.grid(row=0, column=8)
 
+
     # センターライン作成
     def centerline(self):
         root.update_idletasks()
@@ -113,6 +148,7 @@ class App(tk.Frame):
         if filename!="":
 
             with open(filename, "r") as f:
+                #csvファイルがUTF-8だと読み込みができない、ANSIなら読み込み可能
                 #ヘッダ判定
                 while True:
 
@@ -134,7 +170,6 @@ class App(tk.Frame):
         def func():
             self.row = len(self.data)
             self.column = max([len(v) for v in self.data])
-            print(self.row)
             
             # widget初期化
             self.frame_right.destroy()
@@ -142,11 +177,16 @@ class App(tk.Frame):
             self.frame_right.grid(row=0, column=2, sticky=tk.NW)
             self.create_frame_right()
 
-            # X軸ラジオボタン
-            self.var_X = tk.IntVar()
+            # X軸コンボボックス
+            X_values = []
+            self.combobox_X = []
             for i in range(self.column):
-                self.radio = tk.Radiobutton(self.frame_right, value=i, variable=self.var_X)
-                self.radio.grid(row=i+2, column=0)
+                X_values.append(i)
+
+            for i in range(self.column):
+                self.combobox_X.append(ttk.Combobox(self.frame_right, state="readonly", width=5, values=X_values, justify=tk.CENTER))
+                self.combobox_X[i].current(0)
+                self.combobox_X[i].grid(row=i+2, column=0)
 
             # Y1軸チェックボタン
             self.var_Y1 = []
@@ -240,10 +280,11 @@ class App(tk.Frame):
     def create_graph(self):
 
         def func():
-            x = self.var_X.get()
             judge = 0
-            fig, self.ax1 = plt.subplots()
-            
+
+            fig = plt.figure(figsize=(8,5))
+            self.ax1 = fig.add_subplot(1,1,1)
+
             for i in range(self.column):
 
                 if self.var_Y2[i].get()==True:
@@ -252,17 +293,19 @@ class App(tk.Frame):
 
             # グラフ描画
             for i in range(self.column):
-
-                if (self.var_Y1[i].get()==True)&(self.combobox_Approx[i].get()=="None"):
+                x = int(self.combobox_X[i].get())
+              
+                if (self.var_Y1[i].get()==True):
                     self.ax1.plot(self.data[:,x], self.data[:,i], marker=self.trans_marker(self.combobox_Marker[i].get()), ls=self.trans_line(self.combobox_Line[i].get()), label=self.entry_Label[i].get(), color="black", markerfacecolor="None")
 
-                if (self.var_Y2[i].get()==True)&(self.combobox_Approx[i].get()=="None"):
+                if (self.var_Y2[i].get()==True):
                     self.ax2.plot(self.data[:,x], self.data[:,i], marker=self.trans_marker(self.combobox_Marker[i].get()), ls=self.trans_line(self.combobox_Line[i].get()), label=self.entry_Label[i].get(), color="black", markerfacecolor="None")
                     self.ax2.set_ylabel(self.entry_Y2.get())
                     judge = 1
 
             # 近似曲線描画
             for i in range(self.column):
+                x = int(self.combobox_X[i].get())
 
                 if self.combobox_Approx[i].get()!="None":
                     
@@ -290,6 +333,9 @@ class App(tk.Frame):
                 self.ax2.set_ylabel(self.entry_Y2.get())
 
             self.LogAxis()
+            #self.ax1.xaxis.set_minor_locator(plt.MultipleLocator(float(self.entry_Xtick.get())))
+            self.Axislimiter(judge)
+            self.generate_ticks(judge)
 
             plt.show()
 
@@ -344,17 +390,46 @@ class App(tk.Frame):
 
         # x軸が対数スケールのとき補正　有効か検証必要あり
         if self.var_LogX[0].get()==True:
-            x = np.log10(self.data[:,self.var_X.get()])
+            x = np.log10(self.data[:,int(self.combobox_X[i].get())])
         else:
-            x = self.data[:,self.var_X.get()]
+            x = self.data[:,int(self.combobox_X[i].get())]
         
         y = self.data[:,i]
-        approxstyle = self.combobox_Approx[i].get()
         deg = int(self.entry_Degree[i].get())
 
-        return np.poly1d(np.polyfit(x, y, deg))(x)
-        
+        # y軸が対数スケールのとき補正　有効か検証必要あり
+        if (self.var_LogY1[0].get()==True)&(self.var_Y1[i].get()==True):
+            y = np.log10(self.data[:,i])
+            return 10**(np.poly1d(np.polyfit(x, y, deg))(x))
 
+        elif (self.var_LogY2[0].get()==True)&(self.var_Y2[i].get()==True):
+            y = np.log10(self.data[:,i])
+            return 10**(np.poly1d(np.polyfit(x, y, deg))(x))
+
+        return np.poly1d(np.polyfit(x, y, deg))(x)
+
+    def Axislimiter(self, judge):
+        if (self.entry_Xrange_min.get()!="")&(self.entry_Xrange_max.get()!=""):
+            self.ax1.set_xlim([float(self.entry_Xrange_min.get()), float(self.entry_Xrange_max.get())])
+            
+        if (self.entry_Y1range_min.get()!="")&(self.entry_Y1range_max.get()!=""):
+            self.ax1.set_ylim([float(self.entry_Y1range_min.get()), float(self.entry_Y1range_max.get())])
+
+        if judge==1:
+            if (self.entry_Y2range_min.get()!="")&(self.entry_Y2range_max.get()!=""):
+                self.ax2.set_ylim([float(self.entry_Y2range_min.get()), float(self.entry_Y2range_max.get())])
+
+    def generate_ticks(self, judge):
+        if (self.entry_Xtick.get() != "")&(self.var_LogX[0].get()==False):
+            self.ax1.xaxis.set_minor_locator(plt.MultipleLocator(float(self.entry_Xtick.get())))
+        if (self.entry_Y1tick.get() != "")&(self.var_LogY1[0].get()==False):
+            self.ax1.yaxis.set_minor_locator(plt.MultipleLocator(float(self.entry_Y1tick.get())))
+        
+        if judge == 1:
+            if (self.entry_Xtick.get() != "")&(self.var_LogX[0].get()==False):
+                self.ax2.xaxis.set_minor_locator(plt.MultipleLocator(float(self.entry_Xtick.get())))
+            if (self.entry_Y1tick.get() != "")&(self.var_LogY2[0].get()==False):
+                self.ax2.yaxis.set_minor_locator(plt.MultipleLocator(float(self.entry_Y2tick.get())))
 
 
 root = tk.Tk()
