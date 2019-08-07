@@ -16,17 +16,16 @@
 
 ![キャプチャ3](https://user-images.githubusercontent.com/44617952/54919652-b3894900-4f44-11e9-8fcf-4788c0a14332.PNG)
 
-## exeファイルのダウンロード
-
-ファイルサイズが大きいためここにアップロードできませんでした。そのため、GoogleDriveにアップロードしています。
-
-https://drive.google.com/drive/folders/11a72Dv8PkcwaphS6R3fnzCi6qv7Ku_QM?usp=sharing
 
 ## 各設定項目の詳細
 
 - X-axis name：X軸のラベル名称
 - Y1-axis name：Y1軸のラベル名称
 - Y2-axis name：Y2軸のラベル名称
+- X-range X軸について、beginからendの範囲を描画し、tick間隔で目盛を描画
+- Y1-range Y1軸について、beginからendの範囲を描画し、tick間隔で目盛を描画
+- Y2-range Y2軸について、beginからendの範囲を描画し、tick間隔で目盛を描画
+- Dataname データファイルのheaderを表示
 - Label：描画するデータの凡例名称、空欄で凡例なし
 - Marker：データ点に用いるマーカー
 - Line：線の選択
@@ -37,7 +36,6 @@ https://drive.google.com/drive/folders/11a72Dv8PkcwaphS6R3fnzCi6qv7Ku_QM?usp=sha
 ## 注意点
 
 - 近似曲線を描画するときは、元のデータ点を結ぶ直線は描画されません
-- ラベルに日本語を用いる場合は、「Noto Sans CJK JP」というフォントを入れる必要があります
 
 ## 更新内容
 
@@ -51,6 +49,11 @@ csvにヘッダがある場合に動作しない不具合を解消しました�
 
 描画範囲、主目盛間隔、x軸データ選択を行えるようにしました。
 
+-2019/8/8
+
+デフォルトで日本語に対応、Datanameの追加、encoding指定の追加を行いました。この更新で、ファイルにheaderが必須となりました。
+
 ## 今後実装予定
 
-- 可能であれば、デフォルトで日本語対応
+- 各データファイルのconfig保存
+- headerの有無判定もしくは選択ボタンの作成
