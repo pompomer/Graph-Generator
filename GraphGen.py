@@ -634,9 +634,13 @@ class App(tk.Frame):
             config = config + "Degree:"       + self.entry_Degree[i].get()       + ","
             config = config + "Approx Label:" + self.entry_ApproxLabel[i].get()  + "\n"
 
-        config = config + "LogX:"  + str(self.var_LogX[0] .get())  + "\n"
+        config = config + "LogX:"  + str(self.var_LogX[0] .get()) + "\n"
         config = config + "LogY1:" + str(self.var_LogY1[0].get()) + "\n"
         config = config + "LogY2:" + str(self.var_LogY2[0].get()) + "\n" 
+
+        config = config + "InvertX:"  + str(self.var_InvertX[0] .get()) + "\n"
+        config = config + "InvertY1:" + str(self.var_InvertY1[0].get()) + "\n"
+        config = config + "InvertY2:" + str(self.var_InvertY2[0].get()) + "\n"      
 
         f.write(config)
         f.close()
@@ -746,13 +750,17 @@ class App(tk.Frame):
 
             LogX = config[12+self.column].split(":")
             self.var_LogX[0].set(LogX[1])
-
             LogY1 = config[12+self.column+1].split(":")
             self.var_LogY1[0].set(LogY1[1])
-
             LogY2 = config[12+self.column+2].split(":")
             self.var_LogY2[0].set(LogY2[1])
 
+            InvertX = config[12+self.column+3].split(":")
+            self.var_InvertX[0].set(InvertX[1])
+            InvertY1 = config[12+self.column+4].split(":")
+            self.var_InvertY1[0].set(InvertY1[1])
+            InvertY2 = config[12+self.column+5].split(":")
+            self.var_InvertY2[0].set(InvertY2[1])
             f.close()
         else:
             pass
