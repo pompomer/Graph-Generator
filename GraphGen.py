@@ -4,11 +4,11 @@ import tkinter as tk
 import tkinter.filedialog
 import tkinter.messagebox
 import tkinter.ttk as ttk
-import matplotlib as mpl
 from matplotlib.ticker import ScalarFormatter
 import japanize_matplotlib
 import pandas as pd
 import os.path
+import math
 
 
 class App(tk.Frame):
@@ -348,9 +348,9 @@ class App(tk.Frame):
 
         # 軸反転設定
         tk.Label(frame, text="Invert axis").grid(row=self.column+3, column=3)
-        tk.Label(frame, text="X"       ).grid(row=self.column+3, column=4)
-        tk.Label(frame, text="Y1"      ).grid(row=self.column+3, column=5)
-        tk.Label(frame, text="Y2"      ).grid(row=self.column+3, column=6)
+        tk.Label(frame, text="X"          ).grid(row=self.column+3, column=4)
+        tk.Label(frame, text="Y1"         ).grid(row=self.column+3, column=5)
+        tk.Label(frame, text="Y2"         ).grid(row=self.column+3, column=6)
 
         self.var_InvertX  = []
         self.var_InvertY1 = []
@@ -368,6 +368,26 @@ class App(tk.Frame):
         self.checkbutton_InvertY1.grid(row=self.column+4, column=5)
         self.checkbutton_InvertY2.grid(row=self.column+4, column=6)
 
+        # アレニウスプロット
+        tk.Label(frame, text="Arrhenius").grid(row=self.column+1, column=8)
+        self.var_Arrhenius = []
+        self.var_Arrhenius.append(tk.BooleanVar())
+        self.checkbutton_Arrhenius = tk.Checkbutton(frame, variable=self.var_Arrhenius)
+        self.checkbutton_Arrhenius.grid(row=self.column+1, column=9)
+
+        tk.Label(frame, text="major ticks").grid(row=self.column+2, column=8)
+        self.entry_Arrhenius = tk.Entry(frame, justify=tk.RIGHT)
+        self.entry_Arrhenius.grid(row=self.column+2, column=9, columnspan=2)
+
+        tk.Label(frame, text="Label").grid(row=self.column+3, column=8)
+        self.entry_ArrheniusLabel = tk.Entry(frame, justify=tk.RIGHT)
+        self.entry_ArrheniusLabel.grid(row=self.column+3, column=9, columnspan=2)
+
+        tk.Label(frame, text="1000/T").grid(row=self.column+4, column=8)
+        self.var_ArrheniusT = []
+        self.var_ArrheniusT.append(tk.BooleanVar())
+        self.checkbutton_ArrheniusT = tk.Checkbutton(frame, variable=self.var_ArrheniusT)
+        self.checkbutton_ArrheniusT.grid(row=self.column+4, column=9)
 
     # グラフ描画
     def graph(self):
@@ -377,11 +397,8 @@ class App(tk.Frame):
 
             fig = plt.figure(figsize=(float(self.entry_WindowWidth.get()),float(self.entry_WindowHeight.get())))
             self.ax1 = fig.add_subplot(1,1,1)
-
-            for i in range(self.column):
-                if self.var_Y2[i].get()==True:
-                    self.ax2 = self.ax1.twinx()
-                    break
+            self.ax2 = self.ax1.twinx()
+            self.ax2.set_visible(False)
 
             # グラフ描画
             for i in range(self.column):
@@ -393,6 +410,7 @@ class App(tk.Frame):
                 if (self.var_Y2[i].get()==True)&(self.combobox_Approx[i].get()=="None"):
                     self.ax2.plot(self.data[:,x], self.data[:,i], marker=self.trans_marker(self.combobox_Marker[i].get()), ls=self.trans_line(self.combobox_Line[i].get()), label=self.entry_Label[i].get(), color=self.trans_color(self.combobox_Color[i].get()), markerfacecolor=self.trans_color(self.combobox_FaceColor[i].get()), markersize=self.entry_MarkerSize.get(), linewidth=self.entry_LineWidth.get())
                     self.existY2 = 1
+                    self.ax2.set_visible(True)
 
             # 近似曲線描画
             for i in range(self.column):
@@ -444,6 +462,7 @@ class App(tk.Frame):
             self.InvertAxis()
             self.Axislimiter()
             self.generate_ticks()
+            self.Arrhenius()
             
             if(self.var_grid[0].get()==True):
                 plt.grid()
@@ -532,6 +551,7 @@ class App(tk.Frame):
         if self.var_LogY2[0].get()==True:
             self.ax2.set_yscale("log")
 
+    # 軸反転
     def InvertAxis(self):
         if self.var_InvertX[0].get()==True:
             self.ax1.invert_xaxis()
@@ -541,6 +561,53 @@ class App(tk.Frame):
 
         if self.var_InvertY2[0].get()==True:
             self.ax2.invert_yaxis()    
+
+    # アレニウスプロット
+    def Arrhenius(self):
+        if self.var_Arrhenius[0].get()==True:
+            fontsize_of_label = int(self.entry_fontsize_of_label.get())
+            fontsize_of_tick  = int(self.entry_fontsize_of_tick.get())
+            self.ax3 = self.ax1.twiny()
+            self.ax3.set_xlabel(self.entry_ArrheniusLabel.get(), fontsize=fontsize_of_label)
+            self.ax3.tick_params(labelsize=fontsize_of_tick, direction='in', which='both', top=True, right=True)
+            self.ax3.tick_params(which='major', length=10)
+            self.ax3.tick_params(which='minor', length=5)
+            
+            self.ArrheniusTick()
+
+    # アレニウスプロットの目盛生成
+    def ArrheniusTick(self):
+        xmin, xmax = self.ax1.get_xlim()
+
+        if(self.var_ArrheniusT[0].get()==True):
+            xmin = xmin/1000
+            xmax = xmax/1000
+
+
+        tick = [T for T in self.entry_Arrhenius.get().split(",")]
+        tickinv = [1/float(T) for T in tick]
+        self.ax3.set_xticks(tickinv)
+        self.ax3.set_xticklabels(tick)
+        self.ax3.set_xlim(xmin,xmax)
+        # 補助目盛の生成
+        self.Arrhenius_minortick(tick)
+        self.ax3.xaxis.set_minor_locator(plt.FixedLocator(self.Arrhenius_minortick(tick)))
+
+        return tickinv
+
+    # アレニウスプロットの補助目盛生成
+    def Arrhenius_minortick(self, major_tick):
+        minor_tick = []
+        n = len(major_tick)
+        for i in range(n-1):
+            tick_interval = 10**int(math.log10(float(major_tick[i])))
+            tick1 = float(major_tick[i])
+            tick2 = float(major_tick[i+1])
+            while(tick1<tick2):
+                minor_tick.append(1/tick1)
+                tick1 = tick1 + tick_interval
+        
+        return minor_tick
 
     # 近似曲線の計算
     def ApproxLine(self, i):
@@ -640,7 +707,12 @@ class App(tk.Frame):
 
         config = config + "InvertX:"  + str(self.var_InvertX[0] .get()) + "\n"
         config = config + "InvertY1:" + str(self.var_InvertY1[0].get()) + "\n"
-        config = config + "InvertY2:" + str(self.var_InvertY2[0].get()) + "\n"      
+        config = config + "InvertY2:" + str(self.var_InvertY2[0].get()) + "\n"
+
+        config = config + "Arrhenius:"      + str(self.var_Arrhenius[0].get())  + "\n"
+        config = config + "ArrheniusTick:"  + self.entry_Arrhenius.get()        + "\n"  
+        config = config + "ArrheniusLabel:" + self.entry_ArrheniusLabel.get()   + "\n"
+        config = config + "1000/T:"         + str(self.var_ArrheniusT[0].get()) + "\n" 
 
         f.write(config)
         f.close()
@@ -761,6 +833,19 @@ class App(tk.Frame):
             self.var_InvertY1[0].set(InvertY1[1])
             InvertY2 = config[12+self.column+5].split(":")
             self.var_InvertY2[0].set(InvertY2[1])
+
+            Arrhenius = config[12+self.column+6].split(":")
+            self.var_Arrhenius[0].set(Arrhenius[1])
+
+            ArrheniusTick = config[12+self.column+7].split(":")
+            self.entry_Arrhenius.insert(tk.END, ArrheniusTick[1])
+
+            ArrheniusLabel = config[12+self.column+8].split(":")
+            self.entry_ArrheniusLabel.insert(tk.END, ArrheniusLabel[1])
+
+            ArrheniusT = config[12+self.column+9].split(":")
+            self.var_ArrheniusT[0].set(ArrheniusT[1])
+
             f.close()
         else:
             pass
@@ -782,8 +867,7 @@ class App(tk.Frame):
             filename = filename[:-1]
         return filename
 
-        
-
+    
 root = tk.Tk()
 root.title(u"GraphGen ver2.1")
 root.resizable(0, 0)
