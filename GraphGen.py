@@ -5,6 +5,7 @@ import tkinter.filedialog
 import tkinter.messagebox
 import tkinter.ttk as ttk
 from matplotlib.ticker import ScalarFormatter
+import matplotlib.ticker
 import japanize_matplotlib
 import pandas as pd
 import os.path
@@ -542,14 +543,21 @@ class App(tk.Frame):
 
     # 対数軸生成
     def LogAxis(self):
+        locmin = matplotlib.ticker.LogLocator(base=10.0,subs=(0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9),numticks=12)
         if self.var_LogX[0].get()==True:
             self.ax1.set_xscale("log")
+            self.ax1.xaxis.set_minor_locator(locmin)
+            self.ax1.xaxis.set_minor_formatter(matplotlib.ticker.NullFormatter())
         
         if self.var_LogY1[0].get()==True:
             self.ax1.set_yscale("log")
+            self.ax1.yaxis.set_minor_locator(locmin)
+            self.ax1.yaxis.set_minor_formatter(matplotlib.ticker.NullFormatter())
 
         if self.var_LogY2[0].get()==True:
             self.ax2.set_yscale("log")
+            self.ax2.yaxis.set_minor_locator(locmin)
+            self.ax2.yaxis.set_minor_formatter(matplotlib.ticker.NullFormatter())
 
     # 軸反転
     def InvertAxis(self):
